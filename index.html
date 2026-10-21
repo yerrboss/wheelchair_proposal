@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>맞춤형 재활·보조기기 3종 기술 설계 명세서</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+KR:wght@300;400;500;600;700;800&display=swap">
+    <style>
+        body {
+            font-family: 'Noto Sans KR', 'Inter', sans-serif;
+            background-color: #f1f5f9;
+            color: #0f172a;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .page {
+            width: 210mm;
+            min-height: 297mm;
+            padding: 22mm 24mm;
+            margin: 20px auto;
+            background: #ffffff;
+            box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.08);
+            border-radius: 12px;
+            position: relative;
+            box-sizing: border-box;
+            page-break-after: always;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        /* 모던 포토 프레임 (클릭 확대 커서 효과) */
+        .modern-photo {
+            background: #090d16;
+            border-radius: 12px;
+            padding: 16px;
+            text-align: center;
+            margin-bottom: 16px;
+            box-shadow: inset 0 1px 2px rgba(255,255,255,0.05);
+        }
+
+        .modern-photo img {
+            width: 100%;
+            height: 250px;
+            object-fit: contain;
+            border-radius: 8px;
+            cursor: zoom-in;
+            transition: transform 0.2s ease;
+        }
+
+        .modern-photo img:hover {
+            transform: scale(1.01);
+        }
+
+        /* 정돈된 텍스트 블록 */
+        .spec-group {
+            margin-bottom: 12px;
+        }
+
+        .spec-title {
+            font-size: 11.5px;
+            font-weight: 700;
+            color: #2563eb;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 6px;
+        }
+
+        .spec-item {
+            font-size: 13.5px;
+            color: #334155;
+            margin-bottom: 5px;
+            line-height: 1.5;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .spec-item span:first-child {
+            color: #64748b;
+            font-weight: 500;
+        }
+
+        .spec-item span:last-child {
+            color: #0f172a;
+            font-weight: 600;
+            text-align: right;
+        }
+
+        /* 미니멀 예산 테이블 */
+        .modern-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13.5px;
+        }
+
+        .modern-table th {
+            text-align: left;
+            font-weight: 600;
+            color: #64748b;
+            border-bottom: 1px solid #cbd5e1;
+            padding: 8px 10px;
+            font-size: 12px;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+        }
+
+        .modern-table td {
+            border-bottom: 1px solid #f1f5f9;
+            padding: 10px;
+            color: #334155;
+        }
+
+        /* Carousel Styles */
+        .carousel-track {
+            display: flex;
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .carousel-slide {
+            min-width: 100%;
+            box-sizing: border-box;
+        }
+
+        /* Lightbox Modal Styles */
+        #lightbox {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.85);
+            z-index: 9999;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            cursor: zoom-out;
+        }
+
+        #lightbox img {
+            max-width: 90%;
+            max-height: 90vh;
+            object-fit: contain;
+            border-radius: 8px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            background: #0f172a;
+            padding: 10px;
+        }
+
+        @media print {
+            body {
+                background: none;
+                margin: 0;
+            }
+            .no-print {
+                display: none !important;
+            }
+            .page {
+                width: 100%;
+                margin: 0;
+                box-shadow: none;
+                border-radius: 0;
+                padding: 18mm 18mm;
+                page-break-after: always;
+            }
+            @page {
+                size: A4;
+                margin: 0;
+            }
+        }
+    </style>
+</head>
+<body class="py-10">
+
+    <!-- Top Action Bar -->
+    <div class="max-w-[210mm] mx-auto mb-6 flex justify-between items-center px-4 no-print">
+        <div class="flex items-center space-x-2">
+            <span class="w-2.5 h-2.5 rounded-full bg-blue-600 animate-pulse"></span>
+            <span class="text-xs font-bold text-slate-700 tracking-wider uppercase">Wheelchair Proposal & Tech Spec</span>
+        </div>
+        <div class="flex items-center space-x-2">
+            <!-- 이메일하기 버튼 추가 -->
+            
+            <!-- PDF 저장 / 인쇄하기 버튼 -->
+            <button onclick="window.print()" class="bg-slate-900 hover:bg-slate-800 text-white text-xs font-semibold py-2.5 px-5 rounded-lg shadow-sm transition">
+                PDF 저장 / 인쇄하기
+            </button>
+
+            <a href="mailto:jeehea917@gmail.com?subject=[기술명세서 문의]&body=재활·보조기기 3종 기술 설계 명세서 관련 문의드립니다." 
+               class="bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-semibold py-2.5 px-5 rounded-lg shadow-sm transition flex items-center space-x-1.5 text-decoration-none">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+                <span>이메일 보내기</span>
+            </a>
+        </div>
+    </div>
+
+    <!-- Lightbox Modal Container -->
+    <div id="lightbox" onclick="closeLightbox()">
+        <img id="lightboxImg" src="" alt="Enlarged View">
+    </div>
+
+    <!-- ================= PAGE 1 ================= -->
+    <div class="page">
+        <div>
+            <!-- Header -->
+            <div class="flex justify-between items-start border-b border-slate-200 pb-5 mb-5">
+                <div>
+                    <span class="text-[11px] font-mono text-blue-600 font-bold tracking-widest uppercase">SPEC-2026-REHAB-03 // 국립재활원 제출용</span>
+                    <h1 class="text-2xl font-extrabold text-slate-900 mt-1 tracking-tight">맞춤형 재활·보조기기 3종 기술 설계 명세서</h1>
+                </div>
+                <div class="text-right font-mono text-xs text-slate-500">
+                    <p class="font-bold text-slate-900 text-sm">84세 여성 (65kg)</p>
+                    <p class="mt-0.5">2026. 10. 20</p>
+                </div>
+            </div>
+
+            <!-- Clinical Profile -->
+            <div class="bg-slate-50 border border-slate-200 rounded-2xl p-4 mb-5">
+                <div class="flex justify-between items-center mb-2.5">
+                    <span class="text-xs font-bold text-slate-900 uppercase tracking-wider">■ 대상 사용자 임상 제약 조건 (Clinical Profile)</span>
+                    <span class="text-[10px] font-bold text-rose-600 bg-rose-50 border border-rose-200 px-2.5 py-0.5 rounded-full">골절 초고위험군</span>
+                </div>
+                <div class="grid grid-cols-2 gap-2.5 text-xs text-slate-600">
+                    <div>• <strong>중증 골다공증:</strong> T-score -4.17 (미세 충격 골절 위험)</div>
+                    <div>• <strong>좌측 고관절 수술:</strong> 굴곡 70° 제한, 내전 및 비틀림 금기</div>
+                    <div>• <strong>양측 무릎 수술:</strong> 관절 전단력 및 노면 충격 완전 차단</div>
+                    <div>• <strong>다발성 수술 8회:</strong> 편측 근력 저하 및 어깨 통증 유의</div>
+                </div>
+            </div>
+
+            <!-- Item 1 -->
+            <div>
+                <div class="flex justify-between items-baseline mb-2.5">
+                    <h2 class="text-base font-bold text-slate-900">ITEM 01. 초저충격 비대칭 하이브리드 재활운동기기</h2>
+                    <span class="text-xs font-mono font-bold text-blue-600">SHKR-01</span>
+                </div>
+
+                <div class="modern-photo">
+                    <div class="flex justify-between items-center mb-2 px-1 text-[11px] font-mono text-slate-400">
+                        <span>EQUIPMENT SCHEMATIC // ITEM 01 (클릭하여 확대)</span>
+                        <span>PNEUMATIC & ASYMMETRIC DRIVE</span>
+                    </div>
+                    <img src="item1.png" alt="Item 1" onclick="openLightbox(this.src)">
+                </div>
+
+                <div class="grid grid-cols-2 gap-5 text-xs">
+                    <div class="spec-group">
+                        <p class="spec-title">메커니즘 및 하중 분산</p>
+                        <div class="spec-item"><span>공압 리프트 견인</span><span>체중 70% (45.5kg 오프로드)</span></div>
+                        <div class="spec-item"><span>실질 하체 부하</span><span>19.5 kg (관절 보호)</span></div>
+                        <div class="spec-item"><span>고관절 스토퍼</span><span>최대 70° 기계식 락</span></div>
+                        <div class="spec-item"><span>내전 방지 블록</span><span>측면 패딩 (내회전 차단)</span></div>
+                    </div>
+                    <div class="spec-group">
+                        <p class="spec-title">인체공학 및 제어 인터페이스</p>
+                        <div class="spec-item"><span>1축 선형 트랙</span><span>측면 비틀림 하중 0%</span></div>
+                        <div class="spec-item"><span>시트 리클라이닝</span><span>115° 고정 각도</span></div>
+                        <div class="spec-item"><span>무릎 / 발목 래칫</span><span>ROM 15°~60° / 10°~15° 고정</span></div>
+                        <div class="spec-item"><span>사용자 UI</span><span>15인치 고대비 한글 디스플레이</span></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="border-t border-slate-100 pt-3 flex justify-between items-center text-[11px] text-slate-400 font-mono">
+            <span>TECHNICAL SPECIFICATION</span>
+            <span>PAGE 1 OF 3</span>
+        </div>
+    </div>
+
+    <!-- ================= PAGE 2 ================= -->
+    <div class="page">
+        <div>
+            <!-- Item 2 -->
+            <div class="mb-5">
+                <div class="flex justify-between items-baseline mb-2.5">
+                    <h2 class="text-base font-bold text-slate-900">ITEM 02. 무중력 보행 재활 런닝머신 & 통합 Safe-Exit 시스템</h2>
+                    <span class="text-xs font-mono font-bold text-emerald-600">GRSE-02</span>
+                </div>
+
+                <div class="modern-photo">
+                    <div class="flex justify-between items-center mb-2 px-1 text-[11px] font-mono text-slate-400">
+                        <span>EQUIPMENT SCHEMATIC // ITEM 02 (클릭하여 확대)</span>
+                        <span>GAIT REHAB & HYDRAULIC FAIL-SAFE</span>
+                    </div>
+                    <img src="item2.png" alt="Item 2" style="height: 220px;" onclick="openLightbox(this.src)">
+                </div>
+
+                <div class="grid grid-cols-2 gap-5 text-xs mb-3">
+                    <div class="spec-group">
+                        <p class="spec-title" style="color: #059669;">체중 분산 및 서스펜션</p>
+                        <div class="spec-item"><span>다점 하네스 구조</span><span>골반 및 기저귀형 체중 분산</span></div>
+                        <div class="spec-item"><span>어깨 하부 지지</span><span>겨드랑이 완충 암 (어깨 통증 방지)</span></div>
+                        <div class="spec-item"><span>트레드밀 속도</span><span>0.1 km/h 초저속 스타트</span></div>
+                    </div>
+                    <div class="spec-group">
+                        <p class="spec-title" style="color: #059669;">비상 안전 및 Safe-Exit</p>
+                        <div class="spec-item"><span>유압 Soft-Drop</span><span>정전 시 초당 1cm 연착륙</span></div>
+                        <div class="spec-item"><span>Safe-Exit 게이트</span><span>측면 가드레일 자동 스윙</span></div>
+                        <div class="spec-item"><span>비상 정지 시스템</span><span>3중 안전 장치 (햅틱/광학/줄)</span></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Budget Table -->
+            <div>
+                <div class="flex justify-between items-center mb-2">
+                    <h3 class="text-xs font-bold text-slate-900 uppercase tracking-wider">시제품 제작 소요 예산 산출표 (Estimated Budget)</h3>
+                    <span class="text-[10px] text-slate-400 font-mono">KRW (VAT Excluded)</span>
+                </div>
+                <table class="modern-table mb-1">
+                    <thead>
+                        <tr>
+                            <th>품목 (Item)</th>
+                            <th>주요 구성요소 및 제작 사양</th>
+                            <th class="text-right">추정 단가 (KRW)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="font-bold text-slate-900">Item 01</td>
+                            <td>공압 리프트, 내전방지 블록, ROM 스토퍼, 발목 래칫, HMI</td>
+                            <td class="text-right font-mono">15,000,000 ~ 22,000,000</td>
+                        </tr>
+                        <tr>
+                            <td class="font-bold text-slate-900">Item 02</td>
+                            <td>0.1km/h 트레드밀, 다점 하네스, 유압 Soft-Drop, Safe-Exit</td>
+                            <td class="text-right font-mono">12,000,000 ~ 18,000,000</td>
+                        </tr>
+                        <tr>
+                            <td class="font-bold text-slate-900">Item 03</td>
+                            <td>T700 카본, 자이로 원심 제동, 서스펜션, 가변 안티팁, ISOFIX</td>
+                            <td class="text-right font-mono">8,000,000 ~ 15,000,000</td>
+                        </tr>
+                        <tr class="font-bold text-blue-900 bg-blue-50/50">
+                            <td colspan="2" class="py-2.5">합계 (Total Prototype Development Cost)</td>
+                            <td class="text-right font-mono text-blue-600 py-2.5">35,000,000 ~ 55,000,000 원</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="border-t border-slate-100 pt-3 flex justify-between items-center text-[11px] text-slate-400 font-mono">
+            <span>TECHNICAL SPECIFICATION</span>
+            <span>PAGE 2 OF 3</span>
+        </div>
+    </div>
+
+    <!-- ================= PAGE 3 ================= -->
+    <div class="page">
+        <div>
+            <!-- Item 3 Carousel (5 Slides) -->
+            <div class="mb-5">
+                <div class="flex justify-between items-baseline mb-2.5">
+                    <h2 class="text-base font-bold text-slate-900">ITEM 03. 순수 기계식 경량 무중력 안전 휠체어</h2>
+                    <span class="text-xs font-mono font-bold text-indigo-600">CAROUSEL VIEW (<span id="slide-num">1</span>/5)</span>
+                </div>
+
+                <div class="modern-photo relative group mb-3">
+                    <div class="flex justify-between items-center mb-2 px-1 text-[11px] font-mono text-slate-400">
+                        <span>EQUIPMENT SCHEMATIC // ITEM 03 (클릭하여 확대)</span>
+                        <span>100% PURE MECHANICAL & NO MOTOR</span>
+                    </div>
+                    
+                    <div class="overflow-hidden relative rounded-lg bg-slate-950">
+                        <div id="carouselTrack" class="carousel-track">
+                            <div class="carousel-slide flex flex-col items-center justify-center p-2">
+                                <img src="item3_1.png" alt="View 1" style="height: 220px; object-fit: contain;" onclick="openLightbox(this.src)">
+                                <span class="text-xs text-slate-300 mt-2">도면 01: 수동 기계식 레버 및 측면 인체공학 레이아웃</span>
+                            </div>
+                            <div class="carousel-slide flex flex-col items-center justify-center p-2">
+                                <img src="item3_2.png" alt="View 2" style="height: 220px; object-fit: contain;" onclick="openLightbox(this.src)">
+                                <span class="text-xs text-slate-300 mt-2">도면 02: 허브 모터 및 섀시 시스템 오버레이</span>
+                            </div>
+                            <div class="carousel-slide flex flex-col items-center justify-center p-2">
+                                <img src="item3_3.png" alt="View 3" style="height: 220px; object-fit: contain;" onclick="openLightbox(this.src)">
+                                <span class="text-xs text-slate-300 mt-2">도면 03: 콕핏 및 지능형 진단 컨트롤러 다이어그램</span>
+                            </div>
+                            <div class="carousel-slide flex flex-col items-center justify-center p-2">
+                                <img src="item3_4.png" alt="View 4" style="height: 220px; object-fit: contain;" onclick="openLightbox(this.src)">
+                                <span class="text-xs text-slate-300 mt-2">도면 04: 자이로 원심 제동 및 서스펜션 구조 상세</span>
+                            </div>
+                            <div class="carousel-slide flex flex-col items-center justify-center p-2">
+                                <img src="item3_5.png" alt="View 5" style="height: 220px; object-fit: contain;" onclick="openLightbox(this.src)">
+                                <span class="text-xs text-slate-300 mt-2">도면 05: T700 카본 프레임 및 ISOFIX 앵커 배치도</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button onclick="moveSlide(-1)" class="no-print absolute left-3 top-1/2 -translate-y-1/2 bg-slate-800/90 hover:bg-slate-700 text-white w-8 h-8 rounded-full flex items-center justify-center text-xs shadow transition z-10">❮</button>
+                    <button onclick="moveSlide(1)" class="no-print absolute right-3 top-1/2 -translate-y-1/2 bg-slate-800/90 hover:bg-slate-700 text-white w-8 h-8 rounded-full flex items-center justify-center text-xs shadow transition z-10">❯</button>
+
+                    <div class="no-print flex justify-center space-x-1.5 mt-2">
+                        <span class="dot w-2 h-2 rounded-full bg-blue-500 cursor-pointer transition" onclick="currentSlide(0)"></span>
+                        <span class="dot w-2 h-2 rounded-full bg-slate-600 cursor-pointer transition" onclick="currentSlide(1)"></span>
+                        <span class="dot w-2 h-2 rounded-full bg-slate-600 cursor-pointer transition" onclick="currentSlide(2)"></span>
+                        <span class="dot w-2 h-2 rounded-full bg-slate-600 cursor-pointer transition" onclick="currentSlide(3)"></span>
+                        <span class="dot w-2 h-2 rounded-full bg-slate-600 cursor-pointer transition" onclick="currentSlide(4)"></span>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-5 text-xs">
+                    <div class="spec-group">
+                        <p class="spec-title" style="color: #4f46e5;">기계식 제동 및 오르막 보조</p>
+                        <div class="spec-item"><span>구동 메커니즘</span><span>NO 모터 / 전자부품 완전 배제</span></div>
+                        <div class="spec-item"><span>내리막 자동 제동</span><span>자이로 원심 클러치 드럼 브레이크</span></div>
+                        <div class="spec-item"><span>오르막 역주 방지</span><span>래칫 레버 100% 밀림 차단</span></div>
+                    </div>
+                    <div class="spec-group">
+                        <p class="spec-title" style="color: #4f46e5;">초경량 구조 및 승차감</p>
+                        <div class="spec-item"><span>프레임 소재</span><span>T700 카본 & 항공 알루미늄</span></div>
+                        <div class="spec-item"><span>승차감 서스펜션</span><span>체중 분산 메모리폼 & 유공압 완충</span></div>
+                        <div class="spec-item"><span>차량 탑승 고정</span><span>가변 안티팁 휠 & ISOFIX 앵커</span></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Clinical Protocol -->
+            <div>
+                <h3 class="text-xs font-bold text-slate-900 mb-2 uppercase tracking-wider">임상 안전 및 착석 피팅 검증 프로토콜 (Clinical Protocol)</h3>
+                <div class="bg-slate-50 border border-slate-200 rounded-2xl p-3.5 text-xs space-y-2 text-slate-600">
+                    <div class="flex items-start space-x-2.5">
+                        <span class="font-bold font-mono text-blue-600">STEP 1:</span>
+                        <span>착석 전 좌측 고관절 굴곡 70° 스토퍼 및 내전 방지 블록 물리적 고정 상태 사전 체크.</span>
+                    </div>
+                    <div class="flex items-start space-x-2.5">
+                        <span class="font-bold font-mono text-blue-600">STEP 2:</span>
+                        <span>상부 공압 리프트 70% 견인 설정 확인 및 골반/어깨 다점 하네스 및 어깨 받침대 결착 테스트.</span>
+                    </div>
+                    <div class="flex items-start space-x-2.5">
+                        <span class="font-bold font-mono text-blue-600">STEP 3:</span>
+                        <span>휠체어 내리막 자이로 원심 제동 및 오르막 래칫 역주 방지 제동 동작 수동 테스트 수행.</span>
+                    </div>
+                    <div class="flex items-start space-x-2.5">
+                        <span class="font-bold font-mono text-blue-600">STEP 4:</span>
+                        <span>비상 비전원 유압 Soft-Drop(1cm/s) 연착륙 및 Safe-Exit 게이트 스윙 동작 최종 검증.</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="border-t border-slate-100 pt-3 flex justify-between items-center text-[11px] text-slate-400 font-mono">
+            <span>TECHNICAL SPECIFICATION (FINAL)</span>
+            <span>PAGE 3 OF 3</span>
+        </div>
+    </div>
+
+    <!-- Carousel & Lightbox JavaScript Logic -->
+    <script>
+        // Lightbox Functions
+        function openLightbox(imgSrc) {
+            const lightbox = document.getElementById('lightbox');
+            const lightboxImg = document.getElementById('lightboxImg');
+            lightboxImg.src = imgSrc;
+            lightbox.style.display = 'flex';
+        }
+
+        function closeLightbox() {
+            const lightbox = document.getElementById('lightbox');
+            lightbox.style.display = 'none';
+        }
+
+        // Carousel Functions (Total 5 Slides)
+        let currentSlideIdx = 0;
+        const totalSlides = 5;
+
+        function moveSlide(direction) {
+            currentSlideIdx = (currentSlideIdx + direction + totalSlides) % totalSlides;
+            updateCarouselState();
+        }
+
+        function currentSlide(idx) {
+            currentSlideIdx = idx;
+            updateCarouselState();
+        }
+
+        function updateCarouselState() {
+            const track = document.getElementById('carouselTrack');
+            track.style.transform = `translateX(-${currentSlideIdx * 100}%)`;
+            
+            document.getElementById('slide-num').innerText = currentSlideIdx + 1;
+
+            const dots = document.querySelectorAll('.dot');
+            dots.forEach((dot, index) => {
+                if (index === currentSlideIdx) {
+                    dot.classList.remove('bg-slate-600');
+                    dot.classList.add('bg-blue-500');
+                } else {
+                    dot.classList.remove('bg-blue-500');
+                    dot.classList.add('bg-slate-600');
+                }
+            });
+        }
+    </script>
+</body>
+</html>
